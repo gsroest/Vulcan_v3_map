@@ -19,14 +19,18 @@ shinyServer(function(input, output) {
   #vals <- getValues(r)
   #vals <- vals[which(!is.na(vals) & !is.infinite(vals) & vals > -10)]
   #colors   <- colorRampPalette(c("navy","blue","green3","yellow","orange","darkred"))
-  #colors   <- colorRampPalette(c("navy","blue","white","red","darkred"))
-  #pal <- colorNumeric(colors(101), domain=vals,
+  colors   <- colorRampPalette(c("navy","blue","white","red","darkred"))
+  pal <- colorNumeric(colors(101), domain=vals,
   #                    na.color = "transparent")
 
   # create the leaflet map  
   output$vulcan_map <- renderLeaflet({
     leaflet() %>% 
-    addProviderTiles(providers$Esri.WorldGrayCanvas) # %>%
+    addProviderTiles(providers$Esri.WorldGrayCanvas) %>%
+    addTiles(urlTemplate = 'https://github.com/gsroest/Vulcan_v3_map/tree/master/data/tiles/total/{z}/{x}/{y}.png',
+             group="Total", 
+             options=tileOptions(noWrap=T, opacity=0.5, minZoom=0, maxZoom=10, tms = T)) %>%
+    addLayersControl(baseGroups=c("ESRI Grey Canvas"), overlayGroups="Total")
     #addRasterImage(r, colors=pal, project = T, opacity=0.5,
     #               maxBytes=16*38595600) %>%
     #addLegend(pal = pal, values = vals,
